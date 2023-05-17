@@ -1,25 +1,16 @@
-import {singleton} from 'tsyringe';
+import {createStore} from 'redux';
 
-type Listener = () => void;
+type ActionProps = {
+	type: string;
+	size: number;
+};
 
-@singleton()
-export default class Store {
-	count = 0;
-
-	listeners = new Set<Listener>();
-
-	publish() {
-		this.listeners.forEach(forceUpdate => {
-			forceUpdate();
-			console.log(forceUpdate);
-		});
+export default createStore((state, action: ActionProps) => {
+	if (state === undefined) {
+		return {number: 0};
 	}
 
-	addListener(listener: Listener) {
-		this.listeners.add(listener);
+	if (action.type === 'INCREMENT') {
+		return {...state, number: state.number + action.size};
 	}
-
-	removeListener(listener: Listener) {
-		this.listeners.delete(listener);
-	}
-}
+});
